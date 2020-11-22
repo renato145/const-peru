@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { mdFormatArticle, DataItemArticle } from "../utils";
+import { DataItemArticle } from "../store";
+import { mdFormatArticle } from "../utils";
 import { Md } from "./Md";
 
 interface Props {

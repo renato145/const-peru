@@ -12,8 +12,8 @@ export const Articles: React.FC<ArticlesProps> = ({ n }) => (
     {Array(n)
       .fill(0)
       .map((_, i) => (
-        <div>
-          <Link key={i} to={`${Paths.articles}/${i}`}>Art {i}</Link>
+        <div key={i}>
+          <Link to={`${Paths.articles}/${i+1}`}>Art {i+1}</Link>
         </div>
       ))}
   </div>

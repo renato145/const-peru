@@ -1,9 +1,12 @@
 import React from "react";
-import data from "../data/intro.json";
+import { useStore, State } from "../store";
 import { mdFormatIntro } from "../utils";
 import { Md } from "./Md";
 
+const selector = ( state: State ) => state.intro;
+
 export const Intro: React.FC = () => {
+  const data = useStore(selector);
   const md = mdFormatIntro(data);
 
   return (
