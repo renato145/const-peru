@@ -12,6 +12,9 @@ def get_pdf_text(path):
     with pdfplumber.open(path) as pdf: res = L(pdf.pages).map(lambda x: x.extract_text())
     return res
 
+pat_spaces = re.compile(r'[ ]+')
+def clean_spaces(s): return pat_spaces.sub(' ', s.strip())
+
 def remove_header(s): return remove_prefix(s, 'La Constitución \n')
 
 pat_pagenum = re.compile(r'\n\s+\d+\s*$')
@@ -114,7 +117,7 @@ def get_end_sections(text, titles):
     sections = [{'title': t, 'text': text[i:j].strip()} for t,(i,j) in zip(titles,idxs)]
     return new_text,sections
 
-pat_art_cont = re.compile(r'(Artículo)\s+(\d+)\.-[\s\n]+([^\n]+)')
+pat_art_cont = re.compile(r'(Artículo)\s+(\d+)\.-[\s\n]*([^\n]+)')
 def get_articles(text):
     articles = {}
     mat = pat_art_cont.search(text)
@@ -124,7 +127,7 @@ def get_articles(text):
         articles[n] = {'name': mat.group(3).strip()}
         text = text[mat.end():]
         mat = pat_art_cont.search(text)
-        articles[n]['text'] = (text if mat is None else text[:mat.start()]).strip()
+        articles[n]['text'] = clean_spaces(text if mat is None else text[:mat.start()])
         if mat is None: break
             
     return articles
@@ -140,6 +143,8 @@ def get_all_articles(data):
                 d = {'title': title, 'chapter': chapter_n , 'article': n, **article}
                 res.append(d)
             
+    errors = set(range(1,len(res)+1)) - set(L(res).attrgot('article'))
+    if len(errors) > 0: Exception(f'Following articles not found: {errors}')
     return res
 
 def add_references(data, footnotes):
@@ -149,21 +154,18 @@ def add_references(data, footnotes):
         d['footnotes'] = refs
 
 def get_chapter_names(x):
-    if 'text' in x['chapters']: return {}
-    return {k:v['name'] for k,v in x['chapters'].items()}
+    if 'text' in x['chapters']: return []
+    return [{'i':k, 'name':v['name']} for k,v in x['chapters'].items()]
 
-if __name__ == "__main__":
-    config = ConfigParser()
-    config.read('settings.ini')
-    cfg = config['DEFAULT']
-    path = download_pdf(cfg['url'], cfg['dest'])
+def read_pdf_with_footnotes(path):
     pdf_text = get_pdf_text(path)
-    proc_pages = pdf_text.map(process_page)
-    proc_text,proc_footnotes = zip(*proc_pages.map(extract_footnotes))
-    proc_text = ''.join(proc_text)
-    proc_footnotes = merge(*proc_footnotes)
-    source_text = proc_text
+    pages = pdf_text.map(process_page)
+    text,footnotes = zip(*pages.map(extract_footnotes))
+    text = ''.join(text)
+    footnotes = merge(*footnotes)
+    return text,footnotes
 
+def get_intro(source_text, pdf_footnotes):
     intro = {}
     pat = re.compile(r'\w+\b')
     mat = pat.match(source_text)
@@ -172,17 +174,29 @@ if __name__ == "__main__":
     mat = pat_title.search(source_text)
     intro['text'] = source_text[:mat.start()].strip()
     n = int(pat_ref.search(intro['text']).group(1))
-    intro['footnotes'] = [{'ref': n, 'text': proc_footnotes[n]}]
-    source_text = source_text[mat.start():]
+    intro['footnotes'] = [{'ref': n, 'text': pdf_footnotes[n]}]
+    text = source_text[mat.start():]
+    return text,intro
 
-    titles = get_titles(source_text)
+if __name__ == "__main__":
+    config = ConfigParser()
+    config.read('settings.ini')
+    cfg = config['DEFAULT']
+    path = download_pdf(cfg['url'], cfg['dest'])
+
+    source_text,pdf_footnotes = read_pdf_with_footnotes(path)
+    pdf_text,intro = get_intro(source_text, pdf_footnotes)
+
+    titles = get_titles(pdf_text)
     chapters = get_all_chapters(titles)
+
     new_end,end_sections = get_end_sections(chapters[-1]['chapters']['text'], END_TITLES)
     chapters[-1]['chapters']['text'] = new_end
+
     articles = get_all_articles(chapters)
-    add_references(articles, proc_footnotes)
-    add_references(end_sections, proc_footnotes)
-    names = {k:{'name': v['name'], 'chapters': get_chapter_names(chapters[k-1])} for k,v in titles.items()}
+    add_references(articles, pdf_footnotes)
+    add_references(end_sections, pdf_footnotes)
+    names = [{'i': k, 'name': v['name'], 'chapters': get_chapter_names(chapters[k-1])} for k,v in titles.items()]
 
     objs = [names, intro, articles, end_sections]
     names = ['names', 'intro', 'articles', 'end_sections']

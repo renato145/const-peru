@@ -27,7 +27,7 @@ export const AppContent: React.FC = () => {
             <Articles n={articles.length} />
           </Route>
           <Route path={Paths.article}>
-            <Article data={articles} />
+            <Article />
           </Route>
         </Switch>
       </div>
