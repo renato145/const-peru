@@ -109,7 +109,6 @@ def get_chapters(text):
 
 def get_all_chapters(data): return [{'title': k, 'chapters': get_chapters(v['text'])} for k,v in data.items()]
 
-
 def get_end_sections(text, titles):
     idxs = L(titles).map(lambda x: re.search(x, text)).map(lambda x: (x.start(),x.end()))
     new_text = text[:idxs[0][0]]
@@ -140,6 +139,11 @@ def get_all_articles(data):
             articles = get_articles(chapter) if chapter_n == 'text' else get_articles(chapter['text'])
             if chapter_n == 'text': chapter_n = None
             for n,article in articles.items():
+                # manual fix (remove article titles)
+                if (title == 4) and (chapter_n == 14):
+                    article['text'] = article['name'] + ' ' + article['text']
+                    article['name'] = None
+
                 d = {'title': title, 'chapter': chapter_n , 'article': n, **article}
                 res.append(d)
             
@@ -149,10 +153,13 @@ def get_all_articles(data):
 
 def add_references(data, footnotes, text_field='text'):
     for d in data:
-        refs = pat_ref.findall(d[text_field])
-        refs = [{'ref':int(ref), 'text':footnotes[int(ref)]} for ref in refs]
+        text = d[text_field]
+        if text is None: refs = []
+        else:
+            refs = pat_ref.findall(d[text_field])
+            refs = [{'ref':int(ref), 'text':footnotes[int(ref)]} for ref in refs]
+
         d['footnotes'] = d.get('footnotes', []) + refs
-        # d['footnotes'] = footnotes
 
 def get_chapter_names(x):
     if 'text' in x['chapters']: return []
@@ -164,6 +171,10 @@ def read_pdf_with_footnotes(path):
     text,footnotes = zip(*pages.map(extract_footnotes))
     text = ''.join(text)
     footnotes = merge(*footnotes)
+
+    # Manual fixes
+    text = re.sub(r'CAPÍTULO XIV \[\^39\] \n \nDE LA DESCENTRALIZACIÓN', 'CAPITULO XIV DE LA DESCENTRALIZACIÓN[^39] \n', text)
+
     return text,footnotes
 
 def get_intro(source_text, pdf_footnotes):
