@@ -15,7 +15,7 @@ export const FootLinks: React.FC<Props> = ({
   nextText,
 }) => {
   return (
-    <div className="max-w-prose mt-4 flex justify-between">
+    <div className="prose mt-4 flex justify-between">
       <div>
         {prevLink && (
           <Link className="justify-self-end" to={prevLink}>
