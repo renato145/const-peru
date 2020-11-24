@@ -4,7 +4,7 @@ export const mdFormatIntro = ({ title, text, footnotes }: DataItemIntro) => {
   let out = [
     `# ${title}`,
     text,
-    ...footnotes.map(({ ref, text }) => `[^${ref}]: ${text}`),
+    ...footnotes.map(({ ref, text }) => `[^${ref}]: *${text}*`),
   ];
   return out.join("\n\n");
 };
@@ -29,7 +29,7 @@ export const mdFormatArticle = ({
     ...[
       `## Artículo ${article}${name ? ": " + name : ""}`,
       text,
-      ...allFootnotes.map(({ ref, text }) => `[^${ref}]: ${text}`),
+      ...allFootnotes.map(({ ref, text }) => `[^${ref}]: *${text}*`),
     ]
   );
 
