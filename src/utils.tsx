@@ -1,11 +1,10 @@
-import { DataItemArticle, DataItemIntro } from "./store";
+import { DataItemArticle, DataItemIntro, FootNote } from "./store";
+
+export const mdFormatFootnotes = (footnotes: FootNote[]) =>
+  footnotes.map(({ ref, text }) => `[^${ref}]: *${text}*`).join("\n\n");
 
 export const mdFormatIntro = ({ title, text, footnotes }: DataItemIntro) => {
-  let out = [
-    `# ${title}`,
-    text,
-    ...footnotes.map(({ ref, text }) => `[^${ref}]: *${text}*`),
-  ];
+  let out = [`# ${title}`, text, mdFormatFootnotes(footnotes)];
   return out.join("\n\n");
 };
 
@@ -29,7 +28,7 @@ export const mdFormatArticle = ({
     ...[
       `## Artículo ${article}${name ? ": " + name : ""}`,
       text,
-      ...allFootnotes.map(({ ref, text }) => `[^${ref}]: *${text}*`),
+      mdFormatFootnotes(allFootnotes),
     ]
   );
 

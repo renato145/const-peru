@@ -19,16 +19,25 @@ interface MdProps {
 }
 
 export const Md: React.FC<MdProps> = ({ md }) => (
-  <article className="prose prose-blue">
-    <Markdown
-      options={{
-        overrides: {
-          a: CustomA,
-          footer: { props: { className: "text-sm text-gray-600 border-gray-300 border-t pt-1 px-1" } },
+  <Markdown
+    options={{
+      overrides: {
+        a: CustomA,
+        footer: {
+          props: {
+            className:
+              "text-sm text-gray-600 border-gray-300 border-t pt-1 px-1",
+          },
         },
-      }}
-    >
-        {md}
-    </Markdown>
+      },
+    }}
+  >
+    {md}
+  </Markdown>
+);
+
+export const ArticleMd: React.FC<MdProps> = ({ md }) => (
+  <article className="prose prose-blue">
+    <Md md={md} />
   </article>
 );

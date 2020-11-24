@@ -3,29 +3,29 @@ import { useOnKeyGoTo } from "../hooks/useOnKeyGoTo";
 import { useStore, State } from "../store";
 import { mdFormatIntro } from "../utils";
 import { FootLinks } from "./FootLinks";
-import { Md } from "./Md";
+import { ArticleMd } from "./Md";
 
 const selector = (state: State) => state.intro;
-const firstLinkSelector = (state: State) => state.getFirstLink();
-const lastLinkSelector = (state: State) => state.getLastLink();
+const selectFirstLink = (state: State) => state.getFirstLink();
+const selectLastLink = (state: State) => state.getLastLink();
 
 
 export const Intro: React.FC = () => {
   const data = useStore(selector);
   const md = mdFormatIntro(data);
-  const [firstLink, firstArticle] = useStore(firstLinkSelector);
-  const [lastLink, lastArticle] = useStore(lastLinkSelector);
+  const [firstLink, firstArticle] = useStore(selectFirstLink);
+  const [lastLink, lastArticle] = useStore(selectLastLink);
   useOnKeyGoTo({ key: "ArrowLeft", to: lastLink });
   useOnKeyGoTo({ key: "ArrowRight", to: firstLink });
 
   return (
     <div>
-      <Md md={md} />
+      <ArticleMd md={md} />
       <FootLinks
         prevLink={firstLink}
-        prevText={`←Artículo ${firstArticle}`}
+        prevText={`←Artículo ${lastArticle}`}
         nextLink={lastLink}
-        nextText={`Artículo ${lastArticle}→`}
+        nextText={`Artículo ${firstArticle}→`}
       />
     </div>
   );

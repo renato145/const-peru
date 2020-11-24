@@ -151,13 +151,13 @@ def get_all_articles(data):
     if len(errors) > 0: Exception(f'Following articles not found: {errors}')
     return res
 
-def add_references(data, footnotes, text_field='text'):
+def add_references(data, footnotes, typ, text_field='text'):
     for d in data:
         text = d[text_field]
         if text is None: refs = []
         else:
             refs = pat_ref.findall(d[text_field])
-            refs = [{'ref':int(ref), 'text':footnotes[int(ref)]} for ref in refs]
+            refs = [{'ref':int(ref), 'typ': typ, 'text':footnotes[int(ref)]} for ref in refs]
 
         d['footnotes'] = d.get('footnotes', []) + refs
 
@@ -186,7 +186,7 @@ def get_intro(source_text, pdf_footnotes):
     mat = pat_title.search(source_text)
     intro['text'] = source_text[:mat.start()].strip()
     n = int(pat_ref.search(intro['text']).group(1))
-    intro['footnotes'] = [{'ref': n, 'text': pdf_footnotes[n]}]
+    intro['footnotes'] = [{'ref': n, 'text': pdf_footnotes[n], 'typ': 'intro'}]
     text = source_text[mat.start():]
     return text,intro
 
@@ -206,11 +206,11 @@ if __name__ == "__main__":
     chapters[-1]['chapters']['text'] = new_end
 
     articles = get_all_articles(chapters)
-    add_references(articles, pdf_footnotes, 'name')
-    add_references(articles, pdf_footnotes)
-    add_references(end_sections, pdf_footnotes)
+    add_references(articles, pdf_footnotes, 'article_name', 'name')
+    add_references(articles, pdf_footnotes, 'article_text')
+    add_references(end_sections, pdf_footnotes, 'end_section')
     names = [{'i': k, 'name': v['name'], 'chapters': get_chapter_names(chapters[k-1])} for k,v in titles.items()]
-    for title in names: add_references(title['chapters'], pdf_footnotes, 'name')
+    for title in names: add_references(title['chapters'], pdf_footnotes, 'chapter', 'name')
 
     objs = [names, intro, articles, end_sections]
     names = ['names', 'intro', 'articles', 'end_sections']

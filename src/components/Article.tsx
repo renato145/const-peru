@@ -5,7 +5,7 @@ import { useOnKeyGoTo } from "../hooks/useOnKeyGoTo";
 import { useStore } from "../store";
 import { mdFormatArticle } from "../utils";
 import { FootLinks } from "./FootLinks";
-import { Md } from "./Md";
+import { ArticleMd } from "./Md";
 
 export const Article: React.FC = () => {
   const { id: idParam } = useParams<{ id: string }>();
@@ -24,7 +24,7 @@ export const Article: React.FC = () => {
 
   return md ? (
     <div>
-      <Md md={md} />
+      <ArticleMd md={md} />
       <FootLinks
         prevLink={prevLink}
         prevText={`←Artículo ${prevArticle}`}

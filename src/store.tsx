@@ -4,9 +4,23 @@ import intro from "./data/intro.json";
 import articles from "./data/articles.json";
 import { Paths } from "./App";
 // import end_sections from "./data/end_sections.json";
+import { group } from "d3";
 
-interface FootNotes {
-  footnotes: { ref: number; text: string }[];
+export enum FootNoteType {
+  Intro = "intro",
+  ArticleName = "article_name",
+  ArticleText = "article_text",
+  EndSection = "end_section",
+  Chapter = "chapter",
+}
+export interface FootNote {
+  ref: number;
+  text: string;
+  typ: string;
+}
+
+export interface FootNotes {
+  footnotes: FootNote[];
 }
 
 export interface DataItemIntro extends FootNotes {
@@ -29,9 +43,18 @@ export interface DataItemArticle extends FootNotes {
   text: string;
 }
 
+export interface DataItemIndex {
+  title: string;
+  chapters: {
+    chapter: string | undefined;
+    articles: Omit<DataItemArticle, "title" | "chapter" | "text">[];
+  }[];
+}
+
 export type State = {
   intro: DataItemIntro;
   articles: DataItemArticle[];
+  indexData: { indexData: DataItemIndex[] } & FootNotes;
   getNArticles: () => number;
   getArticle: (i: number) => DataItemArticle | undefined;
   getArticleLink: (i: number | null) => string | null;
@@ -59,13 +82,53 @@ const formatArticles: (data: typeof articles) => DataItemArticle[] = (data) => {
   });
 };
 
+const formatIndexData: (
+  data: DataItemArticle[]
+) => { indexData: DataItemIndex[] } & FootNotes = (
+  articles
+) => {
+  const data = articles.map(({ text, ...props }) => props);
+  const indexData = Array.from(
+    group(data, (d) => d.title.name),
+    ([title, items]) => {
+      const chapters = Array.from(
+        group(
+          items.map(({ title, ...props }) => props),
+          (d) => d.chapter?.name
+        ),
+        ([chapter, items]) => {
+          const articles = items.map(({ chapter, ...props }) => props);
+          return { chapter, articles };
+        }
+      );
+      return { title, chapters };
+    }
+  );
+  const footnotes = data
+    .map(({ footnotes, chapter }) =>
+      [footnotes, chapter ? chapter.footnotes : []].flat()
+    )
+    .flat()
+    .filter(
+      (o) =>
+        o.typ === FootNoteType.Chapter || o.typ === FootNoteType.ArticleName
+    );
+  const uniqueFootnotes = [...new Set(footnotes)].sort((o) => o.ref);
+
+  return { indexData, footnotes: uniqueFootnotes };
+};
+
 function fNull<T, U>(f: (props: T) => U) {
   return (props: T | null) => (props === null ? null : f(props));
 }
 
+const formatedArticles = formatArticles(articles);
+const indexData = formatIndexData(formatedArticles);
+
 export const useStore = create<State>((set, get) => ({
   intro,
-  articles: formatArticles(articles),
+  articles: formatedArticles,
+  indexData: indexData,
   getNArticles: () => get().articles.length,
   getArticle: (i) => get().articles[i - 1],
   getArticleLink: fNull((i) =>
