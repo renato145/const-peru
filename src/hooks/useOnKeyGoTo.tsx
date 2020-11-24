@@ -8,7 +8,11 @@ interface Props {
   fallback?: string | null;
 }
 
-export const useOnKeyGoTo: (props: Props) => void = ({ key, to, fallback=null }) => {
+export const useOnKeyGoTo: (props: Props) => void = ({
+  key,
+  to,
+  fallback = null,
+}) => {
   const history = useHistory();
   const callback = useCallback(() => {
     if (to) history.push(to);

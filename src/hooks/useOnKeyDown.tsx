@@ -13,5 +13,5 @@ export const useOnKeyDown: (props: Props) => void = ({ key, callback }) => {
 
     document.addEventListener("keydown", f);
     return () => void document.removeEventListener("keydown", f);
-  });
+  }, [key, callback]);
 };
