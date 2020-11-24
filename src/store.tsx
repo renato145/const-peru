@@ -29,6 +29,7 @@ export interface DataItemArticle extends FootNotes {
 export type State = {
   intro: DataItemIntro;
   articles: DataItemArticle[];
+  nArticles: () => number;
   getArticle: (i: number) => DataItemArticle;
 };
 
@@ -49,5 +50,6 @@ const formatArticles: (data: typeof articles) => DataItemArticle[] = (data) => {
 export const useStore = create<State>((set, get) => ({
   intro,
   articles: formatArticles(articles),
+  nArticles: () => get().articles.length,
   getArticle: (i) => get().articles[i - 1],
 }));

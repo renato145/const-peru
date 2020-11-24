@@ -1,9 +1,10 @@
 import React from "react";
-import { HashRouter, NavLink, Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Switch } from "react-router-dom";
 import { Articles } from "./components/Articles";
 import { Intro } from "./components/Intro";
 import { Article } from "./components/Article";
 import articles from "./data/articles.json";
+import { Navigation } from "./components/Navigation";
 
 export enum Paths {
   home = "/",
@@ -13,12 +14,9 @@ export enum Paths {
 
 export const AppContent: React.FC = () => {
   return (
-    <div>
-      <div>
-        <NavLink to={Paths.home}>Inicio</NavLink>
-        <NavLink to={Paths.articles}>Artículos</NavLink>
-      </div>
-      <div className="mt-6">
+    <div className="container md:max-w-screen-md mx-auto px-2">
+      <Navigation />
+      <div className="mt-4">
         <Switch>
           <Route exact path={Paths.home}>
             <Intro />
