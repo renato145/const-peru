@@ -48,7 +48,9 @@ export interface DataItemIndex {
   chapters: {
     chapter: string | undefined;
     articles: Omit<DataItemArticle, "title" | "chapter" | "text">[];
+    i: number;
   }[];
+  i: number;
 }
 
 export type State = {
@@ -84,24 +86,22 @@ const formatArticles: (data: typeof articles) => DataItemArticle[] = (data) => {
 
 const formatIndexData: (
   data: DataItemArticle[]
-) => { indexData: DataItemIndex[] } & FootNotes = (
-  articles
-) => {
+) => { indexData: DataItemIndex[] } & FootNotes = (articles) => {
   const data = articles.map(({ text, ...props }) => props);
   const indexData = Array.from(
     group(data, (d) => d.title.name),
-    ([title, items]) => {
+    ([title, items], i) => {
       const chapters = Array.from(
         group(
           items.map(({ title, ...props }) => props),
           (d) => d.chapter?.name
         ),
-        ([chapter, items]) => {
+        ([chapter, items], i) => {
           const articles = items.map(({ chapter, ...props }) => props);
-          return { chapter, articles };
+          return { chapter, articles, i: i + 1 };
         }
       );
-      return { title, chapters };
+      return { title, chapters, i: i + 1 };
     }
   );
   const footnotes = data

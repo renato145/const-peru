@@ -33,6 +33,6 @@ export const Article: React.FC = () => {
       />
     </div>
   ) : (
-    <Redirect to={Paths.articles} />
+    <Redirect to={Paths.index} />
   );
 };

@@ -1,6 +1,5 @@
 import React from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
-import { Articles } from "./components/Articles";
 import { Intro } from "./components/Intro";
 import { Article } from "./components/Article";
 import { Navigation } from "./components/Navigation";
@@ -24,9 +23,6 @@ export const AppContent: React.FC = () => {
           </Route>
           <Route exact path={Paths.index}>
             <IndexPage />
-          </Route>
-          <Route exact path={Paths.articles}>
-            <Articles />
           </Route>
           <Route path={Paths.article}>
             <Article />
