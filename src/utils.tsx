@@ -27,7 +27,7 @@ export const mdFormatArticle = ({
 
   out.push(
     ...[
-      `## Artículo ${article}: ${name ?? ""}`,
+      `## Artículo ${article}${name ? ": " + name : ""}`,
       text,
       ...allFootnotes.map(({ ref, text }) => `[^${ref}]: ${text}`),
     ]

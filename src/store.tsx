@@ -18,13 +18,14 @@ interface NameInfo {
   name: string;
 }
 
-interface ChapterInfo extends NameInfo, FootNotes {}
+interface ChapterInfo extends NameInfo, FootNotes {
+}
 
 export interface DataItemArticle extends FootNotes {
   title: NameInfo;
   chapter: ChapterInfo | null;
   article: number;
-  name: string;
+  name: string | null;
   text: string;
 }
 
