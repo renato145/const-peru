@@ -5,7 +5,6 @@ import { Intro } from "./components/Intro";
 import { Article } from "./components/Article";
 import { Navigation } from "./components/Navigation";
 import { IndexPage } from "./components/IndexPage";
-import { useOnKeyGoToIndex } from "./hooks/useOnKeyGoToIndex";
 
 export enum Paths {
   home = "/",
@@ -15,8 +14,6 @@ export enum Paths {
 }
 
 export const AppContent: React.FC = () => {
-  useOnKeyGoToIndex({key: "ArrowUp" ,goBackKey: "ArrowDown"});
-
   return (
     <div className="container md:max-w-screen-md mx-auto px-2">
       <Navigation />
