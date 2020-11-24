@@ -1,8 +1,9 @@
 @tailwind base;
-
-body {
-  @apply antialiased;
-}
-
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
