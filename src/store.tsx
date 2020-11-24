@@ -18,9 +18,11 @@ interface NameInfo {
   name: string;
 }
 
+interface ChapterInfo extends NameInfo, FootNotes {}
+
 export interface DataItemArticle extends FootNotes {
   title: NameInfo;
-  chapter: NameInfo | null;
+  chapter: ChapterInfo | null;
   article: number;
   name: string;
   text: string;
@@ -40,7 +42,11 @@ const formatArticles: (data: typeof articles) => DataItemArticle[] = (data) => {
     return {
       title: { i: title, name: names_data.name },
       chapter: chapter
-        ? { i: chapter, name: names_data.chapters[chapter - 1].name }
+        ? {
+            i: chapter,
+            name: names_data.chapters[chapter - 1].name,
+            footnotes: names_data.chapters[chapter - 1].footnotes,
+          }
         : null,
       ...props,
     };
