@@ -132,3 +132,4 @@ venv.bak/
 .mypy_cache/
 
 .vscode/
+TODO.txt
