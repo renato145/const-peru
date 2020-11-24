@@ -2,6 +2,7 @@ import create from "zustand";
 import names from "./data/names.json";
 import intro from "./data/intro.json";
 import articles from "./data/articles.json";
+import { Paths } from "./App";
 // import end_sections from "./data/end_sections.json";
 
 interface FootNotes {
@@ -18,8 +19,7 @@ interface NameInfo {
   name: string;
 }
 
-interface ChapterInfo extends NameInfo, FootNotes {
-}
+interface ChapterInfo extends NameInfo, FootNotes {}
 
 export interface DataItemArticle extends FootNotes {
   title: NameInfo;
@@ -33,7 +33,12 @@ export type State = {
   intro: DataItemIntro;
   articles: DataItemArticle[];
   nArticles: () => number;
-  getArticle: (i: number) => DataItemArticle;
+  getArticle: (i: number) => DataItemArticle | undefined;
+  getArticleLink: (i: number | null) => string | null;
+  getFirstLink: () => [string | null, number];
+  getLastLink: () => [string | null, number];
+  getPrevLink: (i: number | null) => [string | null, number | null];
+  getNextLink: (i: number | null) => [string | null, number | null];
 };
 
 const formatArticles: (data: typeof articles) => DataItemArticle[] = (data) => {
@@ -54,9 +59,27 @@ const formatArticles: (data: typeof articles) => DataItemArticle[] = (data) => {
   });
 };
 
+function fNull<T, U>(f: (props: T) => U) {
+  return (props: T | null) => (props === null ? null : f(props));
+}
+
 export const useStore = create<State>((set, get) => ({
   intro,
   articles: formatArticles(articles),
   nArticles: () => get().articles.length,
   getArticle: (i) => get().articles[i - 1],
+  getArticleLink: fNull((i) =>
+    i > 0 && i <= get().nArticles() ? `${Paths.articles}/${i}` : null
+  ),
+  getPrevLink: (i) => {
+    return i === null ? [null, null] : [get().getArticleLink(i - 1), i - 1];
+  },
+  getNextLink: (i) => {
+    return i === null ? [null, null] : [get().getArticleLink(i + 1), i + 1];
+  },
+  getFirstLink: () => [get().getArticleLink(1), 1],
+  getLastLink: () => {
+    const i = get().nArticles();
+    return [get().getArticleLink(i), i];
+  },
 }));
