@@ -32,7 +32,7 @@ export interface DataItemArticle extends FootNotes {
 export type State = {
   intro: DataItemIntro;
   articles: DataItemArticle[];
-  nArticles: () => number;
+  getNArticles: () => number;
   getArticle: (i: number) => DataItemArticle | undefined;
   getArticleLink: (i: number | null) => string | null;
   getFirstLink: () => [string | null, number];
@@ -66,10 +66,10 @@ function fNull<T, U>(f: (props: T) => U) {
 export const useStore = create<State>((set, get) => ({
   intro,
   articles: formatArticles(articles),
-  nArticles: () => get().articles.length,
+  getNArticles: () => get().articles.length,
   getArticle: (i) => get().articles[i - 1],
   getArticleLink: fNull((i) =>
-    i > 0 && i <= get().nArticles() ? `${Paths.articles}/${i}` : null
+    i > 0 && i <= get().getNArticles() ? `${Paths.articles}/${i}` : null
   ),
   getPrevLink: (i) => {
     return i === null ? [null, null] : [get().getArticleLink(i - 1), i - 1];
@@ -79,7 +79,7 @@ export const useStore = create<State>((set, get) => ({
   },
   getFirstLink: () => [get().getArticleLink(1), 1],
   getLastLink: () => {
-    const i = get().nArticles();
+    const i = get().getNArticles();
     return [get().getArticleLink(i), i];
   },
 }));

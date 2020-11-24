@@ -28,7 +28,7 @@ export const Md: React.FC<MdProps> = ({ md }) => (
         },
       }}
     >
-      {md}
+        {md}
     </Markdown>
   </article>
 );

@@ -3,16 +3,20 @@ import { HashRouter, Route, Switch } from "react-router-dom";
 import { Articles } from "./components/Articles";
 import { Intro } from "./components/Intro";
 import { Article } from "./components/Article";
-import articles from "./data/articles.json";
 import { Navigation } from "./components/Navigation";
+import { IndexPage } from "./components/IndexPage";
+import { useOnKeyGoTo } from "./hooks/useOnKeyGoTo";
 
 export enum Paths {
   home = "/",
+  index = "/indice",
   articles = "/articulos",
   article = "/articulos/:id",
 }
 
 export const AppContent: React.FC = () => {
+  useOnKeyGoTo({key: 'ArrowUp', to: Paths.index});
+
   return (
     <div className="container md:max-w-screen-md mx-auto px-2">
       <Navigation />
@@ -21,8 +25,11 @@ export const AppContent: React.FC = () => {
           <Route exact path={Paths.home}>
             <Intro />
           </Route>
+          <Route exact path={Paths.index}>
+            <IndexPage />
+          </Route>
           <Route exact path={Paths.articles}>
-            <Articles n={articles.length} />
+            <Articles />
           </Route>
           <Route path={Paths.article}>
             <Article />
