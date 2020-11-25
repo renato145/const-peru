@@ -2,10 +2,12 @@ import React, { useCallback } from "react";
 import { Link, Redirect, useParams } from "react-router-dom";
 import { Paths } from "../App";
 import { useOnKeyGoTo } from "../hooks/useOnKeyGoTo";
-import { useStore } from "../store";
+import { State, useStore } from "../store";
 import { mdFormatArticle } from "../utils";
 import { FootLinks } from "./FootLinks";
 import { ArticleMd, Md } from "./Md";
+
+const selectFirstLink = (state: State) => state.getFirstEndSectionLink();
 
 export const Article: React.FC = () => {
   const { id: idParam } = useParams<{ id: string }>();
@@ -17,10 +19,14 @@ export const Article: React.FC = () => {
   const [nextLink, nextArticle] = useStore(
     useCallback((state) => state.getNextLink(id), [id])
   );
+  const [firstLink] = useStore(selectFirstLink);
   const md = article ? mdFormatArticle(article) : null;
 
-  useOnKeyGoTo({ key: "ArrowLeft", to: prevLink, fallback: Paths.home });
-  useOnKeyGoTo({ key: "ArrowRight", to: nextLink, fallback: Paths.home });
+  const leftLink = prevLink ?? Paths.home;
+  const rightLink = nextLink ?? firstLink;
+
+  useOnKeyGoTo({ key: "ArrowLeft", to: leftLink });
+  useOnKeyGoTo({ key: "ArrowRight", to: rightLink });
 
   return md ? (
     <div className="prose">
@@ -37,10 +43,10 @@ export const Article: React.FC = () => {
       </Link>
       <ArticleMd md={md} />
       <FootLinks
-        prevLink={prevLink}
-        prevText={`←Artículo ${prevArticle}`}
-        nextLink={nextLink}
-        nextText={`Artículo ${nextArticle}→`}
+        prevLink={leftLink}
+        prevText={prevLink ? `←Artículo ${prevArticle}` : "←Preámbulo"}
+        nextLink={rightLink}
+        nextText={nextLink ? `Artículo ${nextArticle}→` : "Finales 1→"}
       />
     </div>
   ) : (

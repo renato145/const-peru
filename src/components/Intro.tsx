@@ -7,14 +7,14 @@ import { ArticleMd } from "./Md";
 
 const selector = (state: State) => state.intro;
 const selectFirstLink = (state: State) => state.getFirstLink();
-const selectLastLink = (state: State) => state.getLastLink();
+const selectLastLink = (state: State) => state.getLastEndSectionLink();
 
 
 export const Intro: React.FC = () => {
   const data = useStore(selector);
   const md = mdFormatIntro(data);
   const [firstLink, firstArticle] = useStore(selectFirstLink);
-  const [lastLink, lastArticle] = useStore(selectLastLink);
+  const [lastLink, lastEndSection] = useStore(selectLastLink);
   useOnKeyGoTo({ key: "ArrowLeft", to: lastLink });
   useOnKeyGoTo({ key: "ArrowRight", to: firstLink });
 
@@ -23,7 +23,7 @@ export const Intro: React.FC = () => {
       <ArticleMd md={md} />
       <FootLinks
         prevLink={lastLink}
-        prevText={`←Artículo ${lastArticle}`}
+        prevText={`←Finales ${lastEndSection}`}
         nextLink={firstLink}
         nextText={`Artículo ${firstArticle}→`}
       />

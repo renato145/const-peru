@@ -6,22 +6,27 @@ import { State, useStore } from "../store";
 import { mdFormatFootnotes } from "../utils";
 import { Md } from "./Md";
 
-const selector = (state: State) => state.indexData;
-const selectFirstLink = (state: State) => state.getFirstLink();
-const SelectLastLink = (state: State) => state.getLastLink();
+const selector = (state: State) => ({
+  intro: state.intro,
+  endSections: state.endSections,
+});
+const selectIndexData = (state: State) => state.indexData;
+const SelectLastLink = (state: State) => state.getLastEndSectionLink();
 const selectGetArticleLink = (state: State) => state.getArticleLink;
+const selectGetEndSectionLink = (state: State) => state.getEndSectionLink;
 
 export const IndexPage: React.FC = () => {
   const location = useLocation();
   const searchParams = useMemo(() => new URLSearchParams(location.search), [
     location.search,
   ]);
-  const { indexData, footnotes } = useStore(selector);
-  const [firstLink] = useStore(selectFirstLink);
+  const { intro, endSections } = useStore(selector);
+  const { indexData, footnotes } = useStore(selectIndexData);
   const [lastLink] = useStore(SelectLastLink);
   const getArticleLink = useStore(selectGetArticleLink);
+  const getEndSectionLink = useStore(selectGetEndSectionLink);
   useOnKeyGoTo({ key: "ArrowLeft", to: lastLink });
-  useOnKeyGoTo({ key: "ArrowRight", to: firstLink });
+  useOnKeyGoTo({ key: "ArrowRight", to: Paths.home });
   const searchTitle = searchParams.get("titulo");
   const searchChapter = searchParams.get("capitulo");
   const showBack = searchTitle || searchChapter;
@@ -30,6 +35,9 @@ export const IndexPage: React.FC = () => {
     <div className="prose">
       <h1>Indice</h1>
       {showBack && <Link to={Paths.index}>Ver todo</Link>}
+      <Link to={Paths.home}>
+        <Md md={`## ${intro.title}`} />
+      </Link>
       {indexData
         .filter(({ i }) => (searchTitle ? i === +searchTitle : true))
         .map(({ title, chapters, i }) => (
@@ -60,6 +68,13 @@ export const IndexPage: React.FC = () => {
                 </div>
               ))}
           </div>
+        ))}
+        {endSections.map(({title, section}, i) => (
+          <div key={i}>
+            <Link to={"" + getEndSectionLink(section)}>
+              <Md md={`### ${title}`} />
+            </Link>
+            </div>
         ))}
       <div className="mt-12">
         <Md md={mdFormatFootnotes(footnotes)} />

@@ -1,10 +1,10 @@
 import create from "zustand";
+import { Paths } from "./App";
+import { group } from "d3";
 import names from "./data/names.json";
 import intro from "./data/intro.json";
 import articles from "./data/articles.json";
-import { Paths } from "./App";
-// import end_sections from "./data/end_sections.json";
-import { group } from "d3";
+import endSections from "./data/end_sections.json";
 
 export enum FootNoteType {
   Intro = "intro",
@@ -43,6 +43,12 @@ export interface DataItemArticle extends FootNotes {
   text: string;
 }
 
+export interface DataItemEndSection extends FootNotes {
+  section: number;
+  text: string;
+  title: string;
+}
+
 export interface DataItemIndex {
   title: string;
   chapters: {
@@ -56,6 +62,7 @@ export interface DataItemIndex {
 export type State = {
   intro: DataItemIntro;
   articles: DataItemArticle[];
+  endSections: DataItemEndSection[];
   indexData: { indexData: DataItemIndex[] } & FootNotes;
   getNArticles: () => number;
   getArticle: (i: number) => DataItemArticle | undefined;
@@ -64,6 +71,13 @@ export type State = {
   getLastLink: () => [string | null, number];
   getPrevLink: (i: number | null) => [string | null, number | null];
   getNextLink: (i: number | null) => [string | null, number | null];
+  getNEndSections: () => number;
+  getEndSection: (i: number) => DataItemEndSection | undefined;
+  getEndSectionLink: (i: number | null) => string | null;
+  getPrevEndSectionLink: (i: number | null) => [string | null, number | null];
+  getNextEndSectionLink: (i: number | null) => [string | null, number | null];
+  getFirstEndSectionLink: () => [string | null, number];
+  getLastEndSectionLink: () => [string | null, number];
 };
 
 const formatArticles: (data: typeof articles) => DataItemArticle[] = (data) => {
@@ -84,10 +98,16 @@ const formatArticles: (data: typeof articles) => DataItemArticle[] = (data) => {
   });
 };
 
+const formatEndSections: (data: typeof endSections) => DataItemEndSection[] = (
+  data
+) => {
+  return data.map((o, i) => ({ section: i + 1, ...o }));
+};
+
 const formatIndexData: (
-  data: DataItemArticle[]
-) => { indexData: DataItemIndex[] } & FootNotes = (articles) => {
-  const data = articles.map(({ text, ...props }) => props);
+  articlesData: DataItemArticle[]
+) => { indexData: DataItemIndex[] } & FootNotes = (articlesData ) => {
+  const data = articlesData.map(({ text, ...props }) => props);
   const indexData = Array.from(
     group(data, (d) => d.title.name),
     ([title, items], i) => {
@@ -104,6 +124,7 @@ const formatIndexData: (
       return { title, chapters, i: i + 1 };
     }
   );
+
   const footnotes = data
     .map(({ footnotes, chapter }) =>
       [footnotes, chapter ? chapter.footnotes : []].flat()
@@ -123,11 +144,13 @@ function fNull<T, U>(f: (props: T) => U) {
 }
 
 const formatedArticles = formatArticles(articles);
+const formatedEndSections = formatEndSections(endSections);
 const indexData = formatIndexData(formatedArticles);
 
 export const useStore = create<State>((set, get) => ({
   intro,
   articles: formatedArticles,
+  endSections: formatedEndSections,
   indexData: indexData,
   getNArticles: () => get().articles.length,
   getArticle: (i) => get().articles[i - 1],
@@ -144,5 +167,21 @@ export const useStore = create<State>((set, get) => ({
   getLastLink: () => {
     const i = get().getNArticles();
     return [get().getArticleLink(i), i];
+  },
+  getNEndSections: () => get().endSections.length,
+  getEndSection: (i) => get().endSections[i-1],
+  getEndSectionLink: fNull((i) =>
+    i > 0 && i <= get().getNEndSections() ? `${Paths.endSections}/${i}` : null
+  ),
+  getPrevEndSectionLink: (i) => {
+    return i === null ? [null, null] : [get().getEndSectionLink(i - 1), i - 1];
+  },
+  getNextEndSectionLink: (i) => {
+    return i === null ? [null, null] : [get().getEndSectionLink(i + 1), i + 1];
+  },
+  getFirstEndSectionLink: () => [get().getEndSectionLink(1), 1],
+  getLastEndSectionLink: () => {
+    const i = get().getNEndSections();
+    return [get().getEndSectionLink(i), i];
   },
 }));
