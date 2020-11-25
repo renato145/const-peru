@@ -9,28 +9,20 @@ export const mdFormatIntro = ({ title, text, footnotes }: DataItemIntro) => {
 };
 
 export const mdFormatArticle = ({
-  title,
   chapter,
   article,
   name,
   text,
   footnotes,
 }: DataItemArticle) => {
-  let out = [`#### Título ${title.i}: ${title.name}`];
-  if (chapter !== null) {
-    out.push(`#### Capítulo ${chapter?.i}: ${chapter?.name}`);
-  }
-
   const chapterFootnotes = chapter?.footnotes ?? [];
   const allFootnotes = chapterFootnotes.concat(footnotes);
 
-  out.push(
-    ...[
-      `## Artículo ${article}${name ? ": " + name : ""}`,
-      text,
-      mdFormatFootnotes(allFootnotes),
-    ]
-  );
+  const out = [
+    `## Artículo ${article}${name ? ": " + name : ""}`,
+    text,
+    mdFormatFootnotes(allFootnotes),
+  ];
 
   return out.join("\n\n");
 };

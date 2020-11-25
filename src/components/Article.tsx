@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
-import { Redirect, useParams } from "react-router-dom";
+import { Link, Redirect, useParams } from "react-router-dom";
 import { Paths } from "../App";
 import { useOnKeyGoTo } from "../hooks/useOnKeyGoTo";
 import { useStore } from "../store";
 import { mdFormatArticle } from "../utils";
 import { FootLinks } from "./FootLinks";
-import { ArticleMd } from "./Md";
+import { ArticleMd, Md } from "./Md";
 
 export const Article: React.FC = () => {
   const { id: idParam } = useParams<{ id: string }>();
@@ -23,7 +23,18 @@ export const Article: React.FC = () => {
   useOnKeyGoTo({ key: "ArrowRight", to: nextLink, fallback: Paths.home });
 
   return md ? (
-    <div>
+    <div className="prose">
+      <Link to={`${Paths.index}?titulo=${article?.title.i}`}>
+        <Md md={`#### Título ${article?.title.i}: ${article?.title.name}`} />
+      </Link>
+      <Link to={`${Paths.index}?titulo=${article?.chapter?.i}`}>
+        <Md
+          overrides={{
+            h4: { props: { style: { marginTop: 0, marginBottom: "-2em" } } },
+          }}
+          md={`#### Capítulo ${article?.chapter?.i}: ${article?.chapter?.name}`}
+        />
+      </Link>
       <ArticleMd md={md} />
       <FootLinks
         prevLink={prevLink}

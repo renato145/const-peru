@@ -1,5 +1,5 @@
 import React, { HTMLProps } from "react";
-import Markdown from "markdown-to-jsx";
+import Markdown, { MarkdownToJSX } from "markdown-to-jsx";
 
 const CustomA: React.FC<HTMLProps<HTMLAnchorElement>> = ({
   children,
@@ -16,12 +16,13 @@ const CustomA: React.FC<HTMLProps<HTMLAnchorElement>> = ({
 
 interface MdProps {
   md: string;
+  overrides?: MarkdownToJSX.Overrides;
 }
 
-export const Md: React.FC<MdProps> = ({ md }) => (
+export const Md: React.FC<MdProps> = ({ md, overrides }) => (
   <Markdown
     options={{
-      overrides: {
+      overrides: overrides ?? {
         a: CustomA,
         footer: {
           props: {
@@ -36,8 +37,8 @@ export const Md: React.FC<MdProps> = ({ md }) => (
   </Markdown>
 );
 
-export const ArticleMd: React.FC<MdProps> = ({ md }) => (
+export const ArticleMd: React.FC<MdProps> = ({ md, overrides }) => (
   <article className="prose prose-blue">
-    <Md md={md} />
+    <Md md={md} overrides={overrides} />
   </article>
 );

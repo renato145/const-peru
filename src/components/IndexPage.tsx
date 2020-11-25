@@ -24,13 +24,15 @@ export const IndexPage: React.FC = () => {
   useOnKeyGoTo({ key: "ArrowRight", to: firstLink });
   const searchTitle = searchParams.get("titulo");
   const searchChapter = searchParams.get("capitulo");
+  const showBack = searchTitle || searchChapter;
 
   return (
-    <div className="prose prose-blue">
+    <div className="prose">
       <h1>Indice</h1>
+      {showBack && <Link to={Paths.index}>Ver todo</Link>}
       {indexData
         .filter(({ i }) => (searchTitle ? i === +searchTitle : true))
-        .map(({ title, chapters, i }) => (
+        .map(({ title, chapters, i }, idx) => (
           <div key={i}>
             <Link to={`${Paths.index}?titulo=${i}`}>
               <Md md={`## Título ${i}: ${title}`} />
@@ -38,20 +40,22 @@ export const IndexPage: React.FC = () => {
             {chapters
               .filter(({ i }) => (searchChapter ? i === +searchChapter : true))
               .map(({ chapter, articles, i: j }) => (
-                <div key={`${i}-${j}`}>
+                <div key={`${i}-${j}`} className="ml-4">
                   {chapter && (
                     <Link to={`${Paths.index}?titulo=${i}&capitulo=${j}`}>
                       <Md md={`### Capítulo ${j}: ${chapter}`} />
                     </Link>
                   )}
                   {articles.map(({ article, name }) => (
-                    <Link key={article} to={"" + getArticleLink(article)}>
-                      <Md
-                        md={`#### Artículo ${article} ${
-                          name ? `: ${name}` : ""
-                        }`}
-                      />
-                    </Link>
+                    <div key={article} className="ml-4">
+                      <Link to={"" + getArticleLink(article)}>
+                        <Md
+                          md={`#### Artículo ${article} ${
+                            name ? `: ${name}` : ""
+                          }`}
+                        />
+                      </Link>
+                    </div>
                   ))}
                 </div>
               ))}

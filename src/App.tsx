@@ -14,9 +14,9 @@ export enum Paths {
 
 export const AppContent: React.FC = () => {
   return (
-    <div className="container md:max-w-screen-md mx-auto px-2">
+    <div className="container md:max-w-screen-md mx-auto">
       <Navigation />
-      <div className="mt-4">
+      <div className="mt-4 px-2">
         <Switch>
           <Route exact path={Paths.home}>
             <Intro />
