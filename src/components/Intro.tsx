@@ -22,9 +22,9 @@ export const Intro: React.FC = () => {
     <div>
       <ArticleMd md={md} />
       <FootLinks
-        prevLink={firstLink}
+        prevLink={lastLink}
         prevText={`←Artículo ${lastArticle}`}
-        nextLink={lastLink}
+        nextLink={firstLink}
         nextText={`Artículo ${firstArticle}→`}
       />
     </div>

@@ -32,7 +32,7 @@ export const IndexPage: React.FC = () => {
       {showBack && <Link to={Paths.index}>Ver todo</Link>}
       {indexData
         .filter(({ i }) => (searchTitle ? i === +searchTitle : true))
-        .map(({ title, chapters, i }, idx) => (
+        .map(({ title, chapters, i }) => (
           <div key={i}>
             <Link to={`${Paths.index}?titulo=${i}`}>
               <Md md={`## Título ${i}: ${title}`} />

@@ -4,7 +4,7 @@ export const mdFormatFootnotes = (footnotes: FootNote[]) =>
   footnotes.map(({ ref, text }) => `[^${ref}]: *${text}*`).join("\n\n");
 
 export const mdFormatIntro = ({ title, text, footnotes }: DataItemIntro) => {
-  let out = [`# ${title}`, text, mdFormatFootnotes(footnotes)];
+  let out = [`## ${title}`, text.replace("CONSTITUCION POLITICA DEL PERU DE 1993", "# CONSTITUCION POLITICA DEL PERU DE 1993"), mdFormatFootnotes(footnotes)];
   return out.join("\n\n");
 };
 
