@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/const-peru/static/css/main.346da203.chunk.css",
-    "main.js": "/const-peru/static/js/main.ebeb558d.chunk.js",
-    "main.js.map": "/const-peru/static/js/main.ebeb558d.chunk.js.map",
+    "main.css": "/const-peru/static/css/main.329926e7.chunk.css",
+    "main.js": "/const-peru/static/js/main.ba40459a.chunk.js",
+    "main.js.map": "/const-peru/static/js/main.ba40459a.chunk.js.map",
     "runtime-main.js": "/const-peru/static/js/runtime-main.284ffac2.js",
     "runtime-main.js.map": "/const-peru/static/js/runtime-main.284ffac2.js.map",
-    "static/js/2.e1fdf9c8.chunk.js": "/const-peru/static/js/2.e1fdf9c8.chunk.js",
-    "static/js/2.e1fdf9c8.chunk.js.map": "/const-peru/static/js/2.e1fdf9c8.chunk.js.map",
+    "static/js/2.50bb5707.chunk.js": "/const-peru/static/js/2.50bb5707.chunk.js",
+    "static/js/2.50bb5707.chunk.js.map": "/const-peru/static/js/2.50bb5707.chunk.js.map",
     "index.html": "/const-peru/index.html",
-    "static/css/main.346da203.chunk.css.map": "/const-peru/static/css/main.346da203.chunk.css.map",
-    "static/js/2.e1fdf9c8.chunk.js.LICENSE.txt": "/const-peru/static/js/2.e1fdf9c8.chunk.js.LICENSE.txt"
+    "static/css/main.329926e7.chunk.css.map": "/const-peru/static/css/main.329926e7.chunk.css.map",
+    "static/js/2.50bb5707.chunk.js.LICENSE.txt": "/const-peru/static/js/2.50bb5707.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.284ffac2.js",
-    "static/js/2.e1fdf9c8.chunk.js",
-    "static/css/main.346da203.chunk.css",
-    "static/js/main.ebeb558d.chunk.js"
+    "static/js/2.50bb5707.chunk.js",
+    "static/css/main.329926e7.chunk.css",
+    "static/js/main.ba40459a.chunk.js"
   ]
 }
