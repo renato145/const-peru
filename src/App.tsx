@@ -13,6 +13,7 @@ export enum Paths {
   article = "/articulos/:id",
   endSections = "/finales",
   endSection = "/finales/:id",
+  url = "https://renato145.github.io/const-peru",
 }
 
 export const AppContent: React.FC = () => {

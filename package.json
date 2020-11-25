@@ -16,6 +16,7 @@
     "@types/react-router-dom": "^5.1.6",
     "autoprefixer": "^10.0.2",
     "d3": "^6.2.0",
+    "disqus-react": "^1.0.10",
     "markdown-to-jsx": "^7.1.0",
     "postcss": "^8.1.9",
     "react": "^17.0.1",
