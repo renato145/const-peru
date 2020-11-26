@@ -27,7 +27,12 @@ export const Article: React.FC = () => {
   const leftLink = prevLink ?? Paths.home;
   const rightLink = nextLink ?? firstLink;
 
-  const url = `${Paths.url}/#${link}`;
+  const discussConfig = {
+    url: `${Paths.url}/${link}`,
+    identifier: `article_${id}`,
+    title: `Artículo ${id}`,
+    language: 'es_MX',
+  };
 
   useOnKeyGoTo({ key: "ArrowLeft", to: leftLink });
   useOnKeyGoTo({ key: "ArrowRight", to: rightLink });
@@ -55,15 +60,7 @@ export const Article: React.FC = () => {
         />
       </div>
       <div className="mt-8">
-        <DiscussionEmbed
-          shortname="const-peru"
-          config={{
-            url,
-            identifier: `article-${id}`,
-            title: `Artículo ${id}`,
-            // language: 'zh_TW'
-          }}
-        />
+        <DiscussionEmbed shortname="const-peru" config={discussConfig} />
       </div>
     </div>
   ) : (
