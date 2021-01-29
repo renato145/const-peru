@@ -5,6 +5,7 @@ import { Article } from "./components/Article";
 import { Navigation } from "./components/Navigation";
 import { IndexPage } from "./components/IndexPage";
 import { Finales } from "./components/Finales";
+import { About } from "./components/About";
 
 export enum Paths {
   home = "/",
@@ -14,6 +15,7 @@ export enum Paths {
   endSections = "/finales",
   endSection = "/finales/:id",
   url = "https://renato145.github.io/const-peru",
+  about = "/about"
 }
 
 export const AppContent: React.FC = () => {
@@ -33,6 +35,9 @@ export const AppContent: React.FC = () => {
           </Route>
           <Route exact path={Paths.endSection}>
             <Finales />
+          </Route>
+          <Route exact path={Paths.about}>
+            <About />
           </Route>
         </Switch>
       </div>
